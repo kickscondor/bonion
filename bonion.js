@@ -11,7 +11,7 @@ module.exports = async (...args) => {
 class Bonion {
   constructor (drive, opts = {}) {
     this.drive = drive
-    this.opts = {}
+    Object.assign(this.opts = {depth: 1}, opts)
     this.forks = {}
   }
 
@@ -23,6 +23,13 @@ class Bonion {
 
     let current = this.forks[drive.url]
     if (current) {
+      //
+      // If a master drive contains a fork, delete our duplicate in the current
+      // drive.
+      //
+      if (depth === 0 && current.drive === this.drive && drive !== this.drive) {
+        removeFork(current.label)
+      }
       if (current.label == null)
         current.label = label
       return
@@ -32,11 +39,13 @@ class Bonion {
     //
     // Access all forks
     //
-    let listing = await drive.readdir('.forks', {includeStats: true})
-    for (let fork of listing) {
-      let key = fork.stat?.mount?.key
-      if (key) {
-        this.scan(beaker.hyperdrive.drive(key), fork.name, depth + 1)
+    if (depth < this.opts.depth) {
+      let listing = await drive.readdir('.forks', {includeStats: true})
+      for (let fork of listing) {
+        let key = fork.stat?.mount?.key
+        if (key) {
+          this.scan(beaker.hyperdrive.drive(key), fork.name, depth + 1)
+        }
       }
     }
 
@@ -46,7 +55,7 @@ class Bonion {
     try {
       info = JSON.parse(await drive.readFile('index.json'))
       if (info.forkOf) {
-        this.scan(beaker.hyperdrive.drive(info.forkOf), null, depth + 1)
+        this.scan(beaker.hyperdrive.drive(info.forkOf), null, depth)
       }
     } catch {}
   }
