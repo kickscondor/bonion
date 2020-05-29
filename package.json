@@ -1,0 +1,28 @@
+{
+  "name": "bonion",
+  "description": "Simple union mounts for Hyperdrive and Beaker Browser.",
+  "version": "0.0.1",
+  "main": "bonion.js",
+  "license": "MIT",
+  "repository": "kickscondor/bonion",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "author": "Kicks Condor",
+  "keywords": [
+    "beaker",
+    "hyperdrive",
+    "union"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && parcel build ui.js --no-cache --public-url /.ui"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4",
+    "regenerator-runtime": "^0.13.5",
+    "umbrellajs": "^3.1.0"
+  },
+  "peerDependencies": {},
+  "dependencies": {}
+}
