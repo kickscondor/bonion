@@ -105,7 +105,6 @@ class Bonion {
     //
     // Find the most recent edit.
     //
-    console.log(stats)
     let st = stats.reduce((a, b) => (b?.stat?.mtime || 0) > (a?.stat?.mtime || 0) ? b : a)
     if (st === null || st.metadata?.bonion === 'D')
       throw new Error("File not found")
